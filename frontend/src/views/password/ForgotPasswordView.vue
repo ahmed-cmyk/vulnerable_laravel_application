@@ -41,35 +41,3 @@ export default {
   },
 };
 </script>
-
-<style>
-form {
-  margin: 3rem auto;
-  height: 40vh;
-  width: 100%;
-  max-width: 500px;
-}
-.field {
-  display: flex;
-  flex-direction: column-reverse;
-  padding: 0.5rem 0;
-}
-.field .field-input {
-  padding: 0.5rem;
-}
-.field .field-submit {
-  padding: 0.75rem 0.5rem;
-  border: none;
-  border-radius: 10px;
-  background: #68bbe3;
-  color: white;
-}
-.field .field-submit:active {
-  background: #0e86d4;
-  transform: scale(1.1);
-}
-.field-error {
-  color: red;
-  text-align: center;
-}
-</style>

@@ -2,6 +2,15 @@
   display: flex;
 }
 
+.direction {
+  &-col {
+    flex-direction: column;
+  }
+  &-row {
+    flex-direction: row;
+  }
+}
+
 .justify {
   &-start {
     justify-content: flex-start;

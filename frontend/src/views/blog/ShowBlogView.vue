@@ -13,6 +13,7 @@
     <section v-else>
       <EditBlogView :blog="blog" @toggle="toggleEdit" />
     </section>
+
     <section class="my-2">
       <div class="flex justify-end">
         <button
@@ -22,11 +23,18 @@
           {{ commentButton }}
         </button>
       </div>
-      <h1 class="bold font-heading">Comments</h1>
-      <CreateView />
-      <div class="card">
-        <h2 class="bold font-subheading">Author</h2>
-        <p>{{ blog.body }}</p>
+      <CreateView v-show="commentMode" @created="toggleComment" />
+    </section>
+
+    <section class="my-2" v-if="comments.length">
+      <div class="card comments">
+        <h2 class="bold font-subheading">
+          Comments <span class="badge">{{ comments.length }}</span>
+        </h2>
+        <div v-for="(comment, index) in comments" class="comment" :key="index">
+          <p>{{ comment.comment }}</p>
+          <small>-- {{ comment.author }}</small>
+        </div>
       </div>
     </section>
   </main>
@@ -38,15 +46,18 @@ import EditBlogView from "./EditBlogView.vue";
 export default {
   data() {
     return {
-      id: this.$route.params.id,
-      editMode: false,
       commentMode: false,
       commentButton: "Add Comment",
+      id: this.$route.params.id,
+      editMode: false,
     };
   },
   computed: {
     blog() {
       return this.$store.getters.getBlogById(this.id)[0];
+    },
+    comments() {
+      return this.$store.getters.getComments;
     },
     token() {
       return this.$store.state.user.token;
@@ -58,14 +69,18 @@ export default {
   created() {
     this.$store.dispatch("checkLocalStorage");
     this.$store.dispatch("getBlogs", this.token);
+    this.$store.dispatch("getComments", { blog_id: this.id });
+  },
+  unmounted() {
+    this.$store.dispatch("clearComments");
   },
   methods: {
-    toggleEdit() {
-      this.editMode = !this.editMode;
-    },
     toggleComment() {
       this.commentMode = !this.commentMode;
       this.commentButton = this.commentMode ? "Cancel" : "Add Comment";
+    },
+    toggleEdit() {
+      this.editMode = !this.editMode;
     },
     async callDelete() {
       const status = await this.$store.dispatch("deleteBlog", {
